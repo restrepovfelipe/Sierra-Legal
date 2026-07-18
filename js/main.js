@@ -667,11 +667,16 @@ if (window.gsap && window.ScrollTrigger) {
     if (dragged) { e.preventDefault(); e.stopPropagation(); }
   }, true);
 
-  // Autoplay: advance one card at a time, loop back at the end, pause on interaction
+  // Autoplay: advance one card at a time, loop back at the end.
+  // Interaction pauses it briefly, then it always resumes on its own —
+  // never relies on an explicit "pointer left the area" event, since a
+  // resting cursor over the (wide) track would otherwise pause it forever.
   if (!prefersReduced) {
     const AUTOPLAY_INTERVAL = 3800;
+    const RESUME_DELAY = 4000;
     let paused = false;
     let timer = null;
+    let resumeTimeout = null;
 
     const advance = () => {
       if (paused) return;
@@ -690,14 +695,16 @@ if (window.gsap && window.ScrollTrigger) {
       if (timer) clearInterval(timer);
       timer = null;
     };
+    const pauseTemporarily = () => {
+      paused = true;
+      clearTimeout(resumeTimeout);
+      resumeTimeout = setTimeout(() => { paused = false; }, RESUME_DELAY);
+    };
 
-    track.addEventListener('pointerenter', () => { paused = true; });
-    track.addEventListener('pointerleave', () => { paused = false; });
-    track.addEventListener('pointerdown', () => { paused = true; });
-    track.addEventListener('focusin', () => { paused = true; });
-    track.addEventListener('focusout', () => { paused = false; });
-    prevBtn?.addEventListener('click', () => { paused = true; });
-    nextBtn?.addEventListener('click', () => { paused = true; });
+    track.addEventListener('pointerdown', pauseTemporarily);
+    track.addEventListener('focusin', pauseTemporarily);
+    prevBtn?.addEventListener('click', pauseTemporarily);
+    nextBtn?.addEventListener('click', pauseTemporarily);
 
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) stop(); else start();
