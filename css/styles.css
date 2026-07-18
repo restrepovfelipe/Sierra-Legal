@@ -614,7 +614,11 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   gap: 16px;
   overflow-x: auto;
-  scroll-snap-type: x proximity;
+  /* No scroll-snap-type here — confirmed by direct testing that it silently
+     reverts small scrollLeft deltas back to the nearest snap point on every
+     write, which fully cancels the marquee's sub-pixel per-frame drift (it
+     never visibly moves). Arrow buttons already jump a full card-width step,
+     so they still land cleanly on card boundaries without native snapping. */
   /* scroll-behavior intentionally NOT smooth — the JS marquee sets scrollLeft
      every animation frame; CSS smoothing would queue/fight those and stutter.
      Explicit { behavior: 'smooth' } is still passed for the arrow-button jumps. */
