@@ -257,7 +257,10 @@ if (window.gsap && window.ScrollTrigger) {
     const decimals = (target % 1 !== 0) ? 1 : 0;
 
     const format = (v) => {
-      const n = decimals ? v.toFixed(1) : Math.round(v);
+      // es-CO uses "." as the thousands separator (2.000, not 2,000) —
+      // matters for the indemnizaciones counter (2000), a no-op for
+      // the smaller ones (9, 50, 97).
+      const n = decimals ? v.toFixed(1) : Math.round(v).toLocaleString('es-CO');
       return `${prefix}${n}${suffix}`;
     };
 
