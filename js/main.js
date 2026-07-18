@@ -418,7 +418,7 @@ if (window.gsap && window.ScrollTrigger) {
   });
 
   // Hover state on interactive elements
-  const hoverables = 'a, button, [role="button"], input, textarea, select, label, [data-magnetic], .faq__q, .area-card, .caso, .testimonio, .casos-hero__card';
+  const hoverables = 'a, button, [role="button"], input, textarea, select, label, [data-magnetic], .faq__q, .area-card, .caso, .testimonio, .casos-hero__card, .lightbox__close, .lightbox__nav';
   document.addEventListener('pointerover', (e) => {
     if (e.target.closest(hoverables)) cursor.classList.add('is-hover');
   });
@@ -666,6 +666,108 @@ if (window.gsap && window.ScrollTrigger) {
   track.addEventListener('click', e => {
     if (dragged) { e.preventDefault(); e.stopPropagation(); }
   }, true);
+
+  // Autoplay: advance one card at a time, loop back at the end, pause on interaction
+  if (!prefersReduced) {
+    const AUTOPLAY_INTERVAL = 3800;
+    let paused = false;
+    let timer = null;
+
+    const advance = () => {
+      if (paused) return;
+      const max = track.scrollWidth - track.clientWidth - 1;
+      if (track.scrollLeft >= max) {
+        track.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        track.scrollBy({ left: cardStep(), behavior: 'smooth' });
+      }
+    };
+    const start = () => {
+      stop();
+      timer = setInterval(advance, AUTOPLAY_INTERVAL);
+    };
+    const stop = () => {
+      if (timer) clearInterval(timer);
+      timer = null;
+    };
+
+    track.addEventListener('pointerenter', () => { paused = true; });
+    track.addEventListener('pointerleave', () => { paused = false; });
+    track.addEventListener('pointerdown', () => { paused = true; });
+    track.addEventListener('focusin', () => { paused = true; });
+    track.addEventListener('focusout', () => { paused = false; });
+    prevBtn?.addEventListener('click', () => { paused = true; });
+    nextBtn?.addEventListener('click', () => { paused = true; });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stop(); else start();
+    });
+
+    start();
+  }
+})();
+
+/* ============================================================
+   LIGHTBOX — full-size sentencia/conciliación viewer
+   ============================================================ */
+(() => {
+  const lightbox = document.querySelector('[data-lightbox]');
+  if (!lightbox) return;
+  const imgEl = lightbox.querySelector('[data-lightbox-img]');
+  const captionEl = lightbox.querySelector('[data-lightbox-caption-el]');
+  const closeBtn = lightbox.querySelector('[data-lightbox-close]');
+  const prevBtn = lightbox.querySelector('[data-lightbox-prev]');
+  const nextBtn = lightbox.querySelector('[data-lightbox-next]');
+
+  let pages = [];
+  let pageIndex = 0;
+  let lastFocused = null;
+
+  const render = () => {
+    imgEl.src = pages[pageIndex];
+    const multi = pages.length > 1;
+    prevBtn.hidden = !multi;
+    nextBtn.hidden = !multi;
+  };
+
+  const open = trigger => {
+    const src = trigger.getAttribute('data-lightbox-src') || '';
+    pages = src.split(',').map(s => s.trim()).filter(Boolean);
+    if (!pages.length) return;
+    pageIndex = 0;
+    captionEl.textContent = trigger.getAttribute('data-lightbox-caption') || '';
+    render();
+    lastFocused = document.activeElement;
+    lightbox.classList.add('is-open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  };
+
+  const close = () => {
+    lightbox.classList.remove('is-open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    lastFocused?.focus?.();
+  };
+
+  document.querySelectorAll('[data-lightbox-src]').forEach(trigger => {
+    trigger.addEventListener('click', () => open(trigger));
+  });
+
+  closeBtn.addEventListener('click', close);
+  lightbox.addEventListener('click', e => {
+    if (e.target === lightbox) close();
+  });
+  prevBtn.addEventListener('click', () => { pageIndex = (pageIndex - 1 + pages.length) % pages.length; render(); });
+  nextBtn.addEventListener('click', () => { pageIndex = (pageIndex + 1) % pages.length; render(); });
+
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('is-open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft' && pages.length > 1) { pageIndex = (pageIndex - 1 + pages.length) % pages.length; render(); }
+    if (e.key === 'ArrowRight' && pages.length > 1) { pageIndex = (pageIndex + 1) % pages.length; render(); }
+  });
 })();
 
 /* ==== SMOOTH ANCHOR SCROLL WITH NAV OFFSET ==== */
