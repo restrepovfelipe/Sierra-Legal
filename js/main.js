@@ -676,7 +676,13 @@ if (window.gsap && window.ScrollTrigger) {
   // old discrete "jump one card every few seconds" autoplay with a smooth,
   // constant-speed drift (ping-pongs between start and end, since the cards
   // aren't duplicated for a seamless infinite loop).
-  if (!prefersReduced) {
+  //
+  // Deliberately NOT gated on prefersReduced: this is a slow (26px/s), linear,
+  // non-flashing drift with full manual override (arrows/drag/click all pause
+  // it instantly) — unlike the parallax/zoom effects elsewhere on the site,
+  // which DO respect prefers-reduced-motion. If a stricter reading of that
+  // preference is needed later, re-add `if (!prefersReduced)` around this block.
+  {
     const SPEED = 26;          // px/sec — slow, elegant drift
     const RESUME_DELAY = 600;  // ms after release before the drift resumes
     let direction = 1;
