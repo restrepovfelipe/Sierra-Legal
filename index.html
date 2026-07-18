@@ -17,7 +17,7 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700&display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700&display=swap" />
 
-  <link rel="stylesheet" href="css/styles.css?v=9" />
+  <link rel="stylesheet" href="css/styles.css?v=10" />
   <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
 </head>
 <body>
@@ -247,16 +247,16 @@
           </span>
         </div>
         <h1 class="hero__title" data-split>
-          Cuando el Estado <em>falla</em>, buscamos justicia por su familia.
+          Si no ganamos, <em>no cobramos</em>.
         </h1>
         <p class="hero__lead" data-reveal>
           Acompañamos a familias que han perdido a un ser querido por acción u omisión del Estado.
           Convertimos su dolor en un caso sólido, y luchamos hasta lograr la reparación integral que merecen.
         </p>
         <div class="hero__cta" data-reveal>
-          <a href="#contacto" class="btn btn--primary" data-magnetic>
-            <span>Agendar consulta gratuita</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <a href="https://wa.me/573104947866?text=Buenas%20tardes%20Sierra%20Legal%2C%20vengo%20de%20su%20pagina%20web%20y%20quiero%20una%20asesor%C3%ADa%20por%20favor." class="btn btn--primary" target="_blank" rel="noopener" data-magnetic>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.966-.273-.099-.471-.148-.67.15-.197.296-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.148-.669-1.611-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/><path d="M20.52 3.449C12.831-3.984.106 1.407.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652a11.882 11.882 0 005.688 1.448h.006c9.884 0 15.744-10.75 10.85-18.416a11.851 11.851 0 00-2.359-2.931"/></svg>
+            <span>Contáctanos a nuestro WhatsApp</span>
           </a>
           <a href="#casos" class="btn btn--link">Ver casos representados</a>
         </div>
@@ -432,23 +432,6 @@
               </div>
             </article>
           </div>
-        </div>
-
-        <!-- Lightbox: full-size viewer for sentencia/conciliación documents -->
-        <div class="lightbox" data-lightbox aria-hidden="true">
-          <button type="button" class="lightbox__close" data-lightbox-close aria-label="Cerrar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-          <button type="button" class="lightbox__nav lightbox__nav--prev" data-lightbox-prev aria-label="Página anterior">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-          </button>
-          <figure class="lightbox__frame">
-            <img class="lightbox__img" data-lightbox-img src="" alt="" />
-            <figcaption class="lightbox__caption" data-lightbox-caption-el></figcaption>
-          </figure>
-          <button type="button" class="lightbox__nav lightbox__nav--next" data-lightbox-next aria-label="Página siguiente">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-          </button>
         </div>
       </div>
 
@@ -959,8 +942,28 @@
   </footer>
 
   <!-- GSAP -->
+  <!-- Lightbox: full-size image viewer for case photos/sentencias. Lives at the end of
+       <body> (not inside .hero) so its position:fixed isn't accidentally contained by a
+       GSAP-transformed ancestor (any [data-reveal] element keeps an inline transform
+       after animating, which would otherwise clip this to that ancestor's box). -->
+  <div class="lightbox" data-lightbox aria-hidden="true">
+    <button type="button" class="lightbox__close" data-lightbox-close aria-label="Cerrar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <button type="button" class="lightbox__nav lightbox__nav--prev" data-lightbox-prev aria-label="Página anterior">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <figure class="lightbox__frame">
+      <img class="lightbox__img" data-lightbox-img src="" alt="" />
+      <figcaption class="lightbox__caption" data-lightbox-caption-el></figcaption>
+    </figure>
+    <button type="button" class="lightbox__nav lightbox__nav--next" data-lightbox-next aria-label="Página siguiente">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-  <script src="js/main.js?v=4"></script>
+  <script src="js/main.js?v=5"></script>
 </body>
 </html>

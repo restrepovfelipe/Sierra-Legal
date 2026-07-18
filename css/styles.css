@@ -217,16 +217,17 @@ a { color: inherit; text-decoration: none; }
   color: var(--cream);
   margin-right: auto;
 }
-/* Official brand lockup — icon + wordmark from brand kit */
+/* Official brand lockup — icon + wordmark from brand kit. Kept at every
+   width (just scaled down) instead of swapping to the bare icon mark,
+   which read as a downgrade on mobile without the wordmark for context. */
 .nav__brand-full {
   height: 40px;
   width: auto;
   display: block;
 }
 .nav__brand-icon { display: none; }
-@media (max-width: 720px) {
-  .nav__brand-full { display: none; }
-  .nav__brand-icon { display: block; height: 40px; width: 40px; }
+@media (max-width: 480px) {
+  .nav__brand-full { height: 30px; }
 }
 /* .nav__word / .nav__title / .nav__sub — legacy text wordmark, superseded by full-lockup SVG */
 
@@ -290,7 +291,10 @@ a { color: inherit; text-decoration: none; }
   position: relative;
   min-height: 100vh; min-height: 100dvh;
   display: grid;
-  align-items: center;
+  /* start (not center): the hero now holds a lot of content (title, lead, CTA,
+     9-card carousel) — centering it left large, inconsistent empty space above
+     the content on tall viewports. Starting keeps spacing under the nav fixed. */
+  align-items: start;
   overflow: hidden;
   background: var(--ink);
   isolation: isolate;
@@ -307,7 +311,7 @@ a { color: inherit; text-decoration: none; }
   position: relative; z-index: 2;
   max-width: var(--container);
   margin-inline: auto;
-  padding: clamp(120px, 18vh, 200px) clamp(20px, 5vw, 48px) clamp(80px, 12vh, 140px);
+  padding: clamp(88px, 11vh, 140px) clamp(20px, 5vw, 48px) clamp(80px, 12vh, 140px);
   width: 100%;
   min-width: 0; /* grid item: allow shrinking below the carousel's intrinsic content width */
 }
