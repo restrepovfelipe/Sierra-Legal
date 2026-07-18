@@ -864,6 +864,14 @@ section { padding: clamp(80px, 14vh, 160px) 0; }
   margin: 18px 0 20px;
 }
 .section-head__title em { font-style: normal; color: var(--coral); font-weight: 700; }
+/* Standalone variant: used when the heading IS the whole section-head
+   (no eyebrow label, no lead paragraph above/below it) — sized up so it
+   still reads as a strong section marker on its own. */
+.section-head__title--standalone {
+  margin: 0;
+  font-size: clamp(42px, 6.5vw, 76px);
+  letter-spacing: -0.03em;
+}
 .section-head__lead {
   font-size: clamp(15.5px, 1.15vw, 18px);
   color: var(--text-dim);
