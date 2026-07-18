@@ -1650,8 +1650,15 @@ html.js .no-js-only { display: none; }
 
 @media (max-width: 560px) {
   /* Icon-only FAB on small screens — a full text pill is too wide to float
-     over content without covering it; the WhatsApp mark alone reads fine. */
-  .whatsapp-float { padding: 14px; right: 16px; bottom: 16px; }
+     over content without covering it; the WhatsApp mark alone reads fine.
+     Lifted higher than a plain 16px so it clears mobile browser chrome /
+     the home-indicator area, with extra safe-area padding on notched phones. */
+  .whatsapp-float {
+    padding: 16px;
+    right: 16px;
+    bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+  }
+  .whatsapp-float svg { width: 28px; height: 28px; }
   .whatsapp-float span { display: none; }
 }
 
