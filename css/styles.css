@@ -295,6 +295,11 @@ a { color: inherit; text-decoration: none; }
      on big/tall monitors where it wasn't. A smaller floor just keeps the
      section from ever looking cramped on very short viewports. */
   min-height: 640px;
+  /* Override the generic `section { padding: clamp(...) 0 }` rule further
+     down — .hero is a <section> too, so it was silently getting that
+     padding-top ON TOP OF .hero__content's own padding this whole time.
+     Hero manages its own spacing entirely via .hero__content. */
+  padding: 0;
   display: grid;
   align-items: start;
   overflow: hidden;
