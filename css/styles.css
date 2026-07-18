@@ -1621,6 +1621,41 @@ html.js .no-js-only { display: none; }
 }
 
 /* ============================================================
+   FLOATING WHATSAPP BUTTON — fixed, always visible while scrolling
+   ============================================================ */
+.whatsapp-float {
+  position: fixed;
+  right: 24px; bottom: 24px;
+  z-index: 150;
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 15px 22px;
+  background: #25D366;
+  color: #fff;
+  border-radius: var(--r-full);
+  font-family: var(--font-sans);
+  font-size: 14.5px; font-weight: 600;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+  box-shadow: 0 10px 30px -6px rgba(0,0,0,0.5);
+  transition: transform var(--dur-med) var(--ease-out),
+              box-shadow var(--dur-med) var(--ease-out),
+              background-color var(--dur-med) var(--ease-out);
+}
+.whatsapp-float:hover {
+  transform: translateY(-3px);
+  background: #20bd5c;
+  box-shadow: 0 14px 38px -6px rgba(0,0,0,0.55);
+}
+.whatsapp-float svg { flex-shrink: 0; }
+
+@media (max-width: 560px) {
+  /* Icon-only FAB on small screens — a full text pill is too wide to float
+     over content without covering it; the WhatsApp mark alone reads fine. */
+  .whatsapp-float { padding: 14px; right: 16px; bottom: 16px; }
+  .whatsapp-float span { display: none; }
+}
+
+/* ============================================================
    REDUCED-MOTION overrides for all micro-motions
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
