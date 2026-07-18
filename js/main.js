@@ -418,7 +418,7 @@ if (window.gsap && window.ScrollTrigger) {
   });
 
   // Hover state on interactive elements
-  const hoverables = 'a, button, [role="button"], input, textarea, select, label, [data-magnetic], .faq__q, .area-card, .caso, .testimonio';
+  const hoverables = 'a, button, [role="button"], input, textarea, select, label, [data-magnetic], .faq__q, .area-card, .caso, .testimonio, .casos-hero__card';
   document.addEventListener('pointerover', (e) => {
     if (e.target.closest(hoverables)) cursor.classList.add('is-hover');
   });
@@ -621,6 +621,51 @@ if (window.gsap && window.ScrollTrigger) {
 
   // Init: counter is a smooth transition for the fade
   if (currentEl) currentEl.style.transition = 'opacity 200ms ease';
+})();
+
+/* ============================================================
+   HERO: casos reales carousel — buttons + drag-to-scroll
+   ============================================================ */
+(() => {
+  const track = document.querySelector('[data-casos-track]');
+  const prevBtn = document.querySelector('[data-casos-prev]');
+  const nextBtn = document.querySelector('[data-casos-next]');
+  if (!track) return;
+
+  const cardGap = 16;
+  const cardStep = () => (track.querySelector('.casos-hero__card')?.offsetWidth || 320) + cardGap;
+
+  const updateArrows = () => {
+    if (!prevBtn || !nextBtn) return;
+    const max = track.scrollWidth - track.clientWidth - 1;
+    prevBtn.disabled = track.scrollLeft <= 0;
+    nextBtn.disabled = track.scrollLeft >= max;
+  };
+  updateArrows();
+  track.addEventListener('scroll', updateArrows, { passive: true });
+  window.addEventListener('resize', updateArrows);
+
+  prevBtn?.addEventListener('click', () => track.scrollBy({ left: -cardStep(), behavior: 'smooth' }));
+  nextBtn?.addEventListener('click', () => track.scrollBy({ left: cardStep(), behavior: 'smooth' }));
+
+  // Drag to scroll (desktop mouse)
+  let isDown = false, startX = 0, startScroll = 0, dragged = false;
+  track.addEventListener('pointerdown', e => {
+    isDown = true; dragged = false;
+    startX = e.clientX;
+    startScroll = track.scrollLeft;
+  });
+  window.addEventListener('pointermove', e => {
+    if (!isDown) return;
+    const dx = e.clientX - startX;
+    if (Math.abs(dx) > 4) dragged = true;
+    track.scrollLeft = startScroll - dx;
+  });
+  window.addEventListener('pointerup', () => { isDown = false; });
+  // Suppress the click on a link/card if the pointer actually dragged
+  track.addEventListener('click', e => {
+    if (dragged) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
 })();
 
 /* ==== SMOOTH ANCHOR SCROLL WITH NAV OFFSET ==== */
