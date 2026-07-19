@@ -670,24 +670,32 @@ if (window.gsap && window.ScrollTrigger) {
     if (dragged) { e.preventDefault(); e.stopPropagation(); }
   }, true);
 
-  // Continuous marquee: drifts slowly and NEVER stops on its own — it only
-  // pauses while the user is actively pressing/clicking the track (or one of
-  // its cards/links), and resumes a beat after they let go. This replaces the
-  // old discrete "jump one card every few seconds" autoplay with a smooth,
-  // constant-speed drift (ping-pongs between start and end, since the cards
-  // aren't duplicated for a seamless infinite loop).
+  // Continuous marquee: drifts slowly and NEVER stops on its own.
+  //
+  // Rather than trying to catch every event that can mean "the user is
+  // interacting" (pointerdown/up/cancel, focus, drag, native touch-scroll,
+  // mouse wheel, keyboard arrows on a focused scrollable div...) — which is
+  // exactly the whack-a-mole that caused this to freeze permanently on
+  // mobile (a touch fires 'pointerdown' but the browser hands the gesture to
+  // native scrolling and fires 'pointercancel', not 'pointerup', so the old
+  // resume-on-release listener never ran) — this instead compares the
+  // track's ACTUAL scrollLeft each frame against what the ticker itself set
+  // last frame. Any mismatch, from any cause whatsoever, means something
+  // else is driving the scroll right now: back off and resync silently. Once
+  // the position has been externally-undisturbed for a short grace period,
+  // resume the drift from wherever it was left. No event listeners, no
+  // pause/resume state machine, no platform-specific gaps to miss.
   //
   // Deliberately NOT gated on prefersReduced: this is a slow (26px/s), linear,
-  // non-flashing drift with full manual override (arrows/drag/click all pause
-  // it instantly) — unlike the parallax/zoom effects elsewhere on the site,
-  // which DO respect prefers-reduced-motion. If a stricter reading of that
-  // preference is needed later, re-add `if (!prefersReduced)` around this block.
+  // non-flashing drift with full manual override — unlike the parallax/zoom
+  // effects elsewhere on the site, which DO respect prefers-reduced-motion.
   {
-    const SPEED = 26;          // px/sec — slow, elegant drift
-    const RESUME_DELAY = 600;  // ms after release before the drift resumes
+    const SPEED = 26;              // px/sec — slow, elegant drift
+    const IDLE_BEFORE_RESUME = 500; // ms of undisturbed position before resuming
+    const DRIFT_TOLERANCE = 1;      // px — ignores float rounding, not real interaction
     let direction = 1;
-    let paused = false;
-    let resumeTimeout = null;
+    let expected = track.scrollLeft;
+    let idleSince = 0;
     let lastTime = null;
 
     const tick = (time) => {
@@ -695,50 +703,30 @@ if (window.gsap && window.ScrollTrigger) {
       if (lastTime === null) lastTime = time;
       const dt = (time - lastTime) / 1000;
       lastTime = time;
-      if (paused || document.hidden) return;
+      if (document.hidden) return;
 
       const max = track.scrollWidth - track.clientWidth;
       if (max <= 0) return;
 
-      let next = track.scrollLeft + direction * SPEED * dt;
+      const actual = track.scrollLeft;
+      if (Math.abs(actual - expected) > DRIFT_TOLERANCE) {
+        // Something else (touch, native momentum scroll, drag, wheel,
+        // keyboard, an arrow-button's smooth scrollBy) is moving it right
+        // now. Track along with it and reset the idle clock.
+        expected = actual;
+        idleSince = time;
+        return;
+      }
+
+      if (time - idleSince < IDLE_BEFORE_RESUME) return;
+
+      let next = expected + direction * SPEED * dt;
       if (next >= max) { next = max; direction = -1; }
       else if (next <= 0) { next = 0; direction = 1; }
       track.scrollLeft = next;
+      expected = next;
     };
     requestAnimationFrame(tick);
-
-    let watchdogTimeout = null;
-    const pauseNow = () => {
-      paused = true;
-      clearTimeout(resumeTimeout);
-      // Safety net: guarantee we NEVER stay paused forever, no matter what
-      // sequence of events got us here. This is what actually fixes mobile —
-      // a touch on the track fires 'pointerdown' (pause), but the browser then
-      // hijacks the gesture for native scrolling and fires 'pointercancel'
-      // instead of 'pointerup', so the resume-on-release listener below never
-      // ran and the drift stayed frozen from the very first touch onward.
-      clearTimeout(watchdogTimeout);
-      watchdogTimeout = setTimeout(() => { paused = false; }, 4000);
-    };
-    const scheduleResume = () => {
-      clearTimeout(resumeTimeout);
-      resumeTimeout = setTimeout(() => { paused = false; }, RESUME_DELAY);
-    };
-
-    // Pause the instant the user presses down (click or touch), resume
-    // shortly after they release — dragging already sets scrollLeft directly
-    // via the pointermove handler above, so pausing avoids the two fighting.
-    track.addEventListener('pointerdown', pauseNow);
-    window.addEventListener('pointerup', scheduleResume);
-    // 'pointercancel' fires instead of 'pointerup' when the browser turns a
-    // touch into a native scroll/pan gesture — the common mobile case.
-    window.addEventListener('pointercancel', scheduleResume);
-    // Keyboard users tabbing into a card/link count as "interacting" too.
-    track.addEventListener('focusin', pauseNow);
-    track.addEventListener('focusout', scheduleResume);
-    // Arrow-button navigation also pauses briefly so the jump doesn't fight the drift.
-    prevBtn?.addEventListener('click', () => { pauseNow(); scheduleResume(); });
-    nextBtn?.addEventListener('click', () => { pauseNow(); scheduleResume(); });
 
     // Reset the frame-delta baseline when the tab regains visibility so a
     // long background stint doesn't produce one huge jump on return.
