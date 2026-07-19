@@ -448,7 +448,7 @@ if (window.gsap && window.ScrollTrigger) {
   });
 
   // Hover state on interactive elements
-  const hoverables = 'a, button, [role="button"], input, textarea, select, label, [data-magnetic], .faq__q, .area-card, .caso, .testimonio, .casos-hero__card, .lightbox__close, .lightbox__nav';
+  const hoverables = 'a, button, [role="button"], input, textarea, select, label, [data-magnetic], .faq__q, .area-card, .testimonio, .casos-hero__card, .lightbox__close, .lightbox__nav';
   document.addEventListener('pointerover', (e) => {
     if (e.target.closest(hoverables)) cursor.classList.add('is-hover');
   });
@@ -505,11 +505,11 @@ if (window.gsap && window.ScrollTrigger) {
 })();
 
 /* ============================================================
-   CARD 3D TILT — cases + areas + testimonials
+   CARD 3D TILT — testimonials
    ============================================================ */
 (() => {
   if (prefersReduced) return;
-  const tiltCards = document.querySelectorAll('.caso, .testimonio');
+  const tiltCards = document.querySelectorAll('.testimonio');
   tiltCards.forEach(card => {
     const strength = 8; // max degrees
     card.addEventListener('pointermove', (e) => {

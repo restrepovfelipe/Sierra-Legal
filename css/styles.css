@@ -1019,47 +1019,6 @@ section { padding: clamp(80px, 14vh, 160px) 0; }
 }
 
 /* ============================================================
-   CASOS
-   ============================================================ */
-.casos__grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
-}
-.caso {
-  padding: 32px 30px;
-  background: var(--obsidian-2);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  transition: transform var(--dur-med) var(--ease-out), border-color var(--dur-med) var(--ease-out);
-}
-.caso:hover { transform: translateY(-3px); border-color: var(--border-2); }
-.caso__header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 20px;
-}
-.caso__tag {
-  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--coral);
-  padding: 5px 10px;
-  border: 1px solid var(--coral);
-  border-radius: var(--r-full);
-}
-.caso__year { font-size: 13px; color: var(--text-mute); font-variant-numeric: tabular-nums; }
-.caso h3 { color: var(--cream); font-size: 22px; margin-bottom: 12px; font-weight: 500; }
-.caso p { color: var(--text-dim); font-size: 15px; margin-bottom: 24px; line-height: 1.6; }
-.caso__stats {
-  margin: 0;
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-}
-.caso__stats div { display: flex; flex-direction: column; gap: 3px; }
-.caso__stats dt { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-mute); }
-.caso__stats dd { margin: 0; font-family: var(--font-sans); font-weight: 600; font-size: 16px; color: var(--cream); font-variant-numeric: tabular-nums; letter-spacing: -0.005em; }
-
-@media (max-width: 900px) { .casos__grid { grid-template-columns: 1fr; } }
-
-/* ============================================================
    TESTIMONIOS
    ============================================================ */
 .testimonios { background: var(--obsidian-2); }
@@ -1190,27 +1149,9 @@ section { padding: clamp(80px, 14vh, 160px) 0; }
 .sobre__body p strong { color: var(--cream); font-weight: 500; }
 .sobre__lead { font-size: 18px; line-height: 1.7; }
 
-.sobre__creds {
-  list-style: none; margin: 40px 0; padding: 0;
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-}
-.sobre__creds li { border-top: 1px solid var(--border); padding-top: 20px; }
-.sobre__creds span {
-  display: block;
-  font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: 32px;
-  color: var(--coral);
-  margin-bottom: 8px;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-.sobre__creds p { font-size: 13px; color: var(--text-dim); line-height: 1.5; margin: 0; }
-
 @media (max-width: 900px) {
   .sobre__grid { grid-template-columns: 1fr; }
   .sobre__portrait { position: static; max-width: 360px; }
-  .sobre__creds { grid-template-columns: 1fr; }
 }
 
 /* ============================================================
@@ -1547,7 +1488,7 @@ html.js .no-js-only { display: none; }
 /* ============================================================
    CARD 3D TILT
    ============================================================ */
-.caso, .area-card, .testimonio {
+.area-card, .testimonio {
   transform-style: preserve-3d;
   will-change: transform;
 }
