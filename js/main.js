@@ -247,6 +247,33 @@ if (window.gsap && window.ScrollTrigger) {
   });
 })();
 
+/* ============================================================
+   WHY CHOOSE US — motion checklist
+   Each item "checks off" independently as it scrolls into view
+   (CSS handles the ring/checkmark stroke-draw + text lift, keyed off
+   the .is-in class) — a per-item trigger rather than one grouped
+   stagger, so it reads as progressively ticking down a list while
+   scrolling rather than all five checking at once.
+   ============================================================ */
+(() => {
+  const items = document.querySelectorAll('.why__item');
+  if (!items.length) return;
+
+  if (prefersReduced) {
+    items.forEach(item => item.classList.add('is-in'));
+    return;
+  }
+
+  items.forEach(item => {
+    ScrollTrigger.create({
+      trigger: item,
+      start: 'top 85%',
+      once: true,
+      onEnter: () => item.classList.add('is-in')
+    });
+  });
+})();
+
 /* ==== TRUST STRIP: number counter ==== */
 (() => {
   const cells = document.querySelectorAll('[data-count]');
