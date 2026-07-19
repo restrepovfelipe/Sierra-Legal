@@ -707,9 +707,18 @@ if (window.gsap && window.ScrollTrigger) {
     };
     requestAnimationFrame(tick);
 
+    let watchdogTimeout = null;
     const pauseNow = () => {
       paused = true;
       clearTimeout(resumeTimeout);
+      // Safety net: guarantee we NEVER stay paused forever, no matter what
+      // sequence of events got us here. This is what actually fixes mobile —
+      // a touch on the track fires 'pointerdown' (pause), but the browser then
+      // hijacks the gesture for native scrolling and fires 'pointercancel'
+      // instead of 'pointerup', so the resume-on-release listener below never
+      // ran and the drift stayed frozen from the very first touch onward.
+      clearTimeout(watchdogTimeout);
+      watchdogTimeout = setTimeout(() => { paused = false; }, 4000);
     };
     const scheduleResume = () => {
       clearTimeout(resumeTimeout);
@@ -721,6 +730,9 @@ if (window.gsap && window.ScrollTrigger) {
     // via the pointermove handler above, so pausing avoids the two fighting.
     track.addEventListener('pointerdown', pauseNow);
     window.addEventListener('pointerup', scheduleResume);
+    // 'pointercancel' fires instead of 'pointerup' when the browser turns a
+    // touch into a native scroll/pan gesture — the common mobile case.
+    window.addEventListener('pointercancel', scheduleResume);
     // Keyboard users tabbing into a card/link count as "interacting" too.
     track.addEventListener('focusin', pauseNow);
     track.addEventListener('focusout', scheduleResume);
