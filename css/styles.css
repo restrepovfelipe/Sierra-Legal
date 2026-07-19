@@ -101,7 +101,21 @@ h1,h2,h3,h4 {
   letter-spacing: -0.02em;
   color: var(--cream);
 }
-p { margin: 0; }
+p {
+  margin: 0;
+  /* Justified body copy sitewide. text-align-last keeps the final line of
+     each paragraph left-aligned (the default justify behavior everywhere
+     else would otherwise stretch it too, which looks broken on short last
+     lines). hyphens:auto softens the word-spacing gaps justify can create
+     in narrow columns — html[lang="es-CO"] gives browsers the dictionary
+     they need for Spanish hyphenation. Single-line paragraphs are
+     unaffected either way, since there's no second line to justify against. */
+  text-align: justify;
+  text-align-last: left;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+}
 a { color: inherit; text-decoration: none; }
 
 /* ==== A11Y ==== */
