@@ -1355,6 +1355,11 @@ section { padding: clamp(56px, 8vh, 96px) 0; }
 .foot__base a { color: var(--text-dim); transition: color var(--dur-med) var(--ease-out); }
 .foot__base a:hover { color: var(--coral); }
 
+.foot__credit { display: flex; align-items: center; gap: 6px; }
+.foot__credit-link { display: inline-flex; align-items: center; gap: 6px; }
+.foot__credit-logo { height: 15px; width: auto; display: block; opacity: 0.85; transition: opacity var(--dur-med) var(--ease-out); }
+.foot__credit-link:hover .foot__credit-logo { opacity: 1; }
+
 @media (max-width: 900px) {
   .foot__grid { grid-template-columns: 1fr 1fr; gap: 40px 24px; }
   .foot__brand { grid-column: 1 / -1; }
