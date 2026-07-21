@@ -411,55 +411,6 @@ if (window.gsap && window.ScrollTrigger) {
 })();
 
 /* ============================================================
-   CUSTOM CURSOR — desktop pointer-fine devices only
-   ============================================================ */
-(() => {
-  if (prefersReduced) return;
-  const finePointer = window.matchMedia('(pointer: fine)').matches;
-  if (!finePointer) return;
-
-  const cursor = document.createElement('div');
-  cursor.className = 'cursor';
-  cursor.innerHTML = '<span class="cursor__ring"></span><span class="cursor__dot"></span>';
-  document.body.appendChild(cursor);
-
-  const state = { x: 0, y: 0, tx: 0, ty: 0 };
-  const ring = cursor.querySelector('.cursor__ring');
-  const dot = cursor.querySelector('.cursor__dot');
-
-  window.addEventListener('pointermove', (e) => {
-    state.x = e.clientX;
-    state.y = e.clientY;
-    if (!cursor.classList.contains('is-visible')) cursor.classList.add('is-visible');
-    // Instant dot position
-    gsap.set(dot, { x: state.x, y: state.y });
-  }, { passive: true });
-
-  window.addEventListener('pointerleave', () => cursor.classList.remove('is-visible'));
-  window.addEventListener('pointerenter', () => cursor.classList.add('is-visible'));
-  window.addEventListener('pointerdown', () => cursor.classList.add('is-press'));
-  window.addEventListener('pointerup', () => cursor.classList.remove('is-press'));
-
-  // Smoothly trail the ring
-  gsap.ticker.add(() => {
-    state.tx += (state.x - state.tx) * 0.18;
-    state.ty += (state.y - state.ty) * 0.18;
-    gsap.set(ring, { x: state.tx, y: state.ty });
-  });
-
-  // Hover state on interactive elements
-  const hoverables = 'a, button, [role="button"], input, textarea, select, label, [data-magnetic], .faq__q, .area-card, .testimonio, .casos-hero__card, .lightbox__close, .lightbox__nav';
-  document.addEventListener('pointerover', (e) => {
-    if (e.target.closest(hoverables)) cursor.classList.add('is-hover');
-  });
-  document.addEventListener('pointerout', (e) => {
-    if (e.target.closest(hoverables) && !e.relatedTarget?.closest?.(hoverables)) {
-      cursor.classList.remove('is-hover');
-    }
-  });
-})();
-
-/* ============================================================
    HERO MOUSE PARALLAX — layered depth from cursor
    ============================================================ */
 (() => {
@@ -592,10 +543,6 @@ if (window.gsap && window.ScrollTrigger) {
   if (items.length < 2) return;
 
   const marker = track.closest('.marker');
-  const currentEl = marker?.querySelector('[data-marker-current]');
-  const totalEl = marker?.querySelector('[data-marker-total]');
-  const pad = n => String(n).padStart(2, '0');
-  if (totalEl) totalEl.textContent = pad(items.length);
 
   // Lock the track width to the widest item so nothing jitters
   const setTrackWidth = () => {
@@ -616,16 +563,6 @@ if (window.gsap && window.ScrollTrigger) {
   let idx = 0;
   let paused = false;
 
-  const setIndex = (n) => {
-    if (!currentEl) return;
-    // Micro-transition on the counter itself: brief fade
-    currentEl.style.opacity = '0.3';
-    setTimeout(() => {
-      currentEl.textContent = pad(n + 1);
-      currentEl.style.opacity = '1';
-    }, 200);
-  };
-
   const advance = () => {
     if (paused || prefersReduced) return;
     const current = items[idx];
@@ -637,7 +574,6 @@ if (window.gsap && window.ScrollTrigger) {
     next.classList.add('is-active');
     setTimeout(() => current.classList.remove('is-leaving'), 700);
     idx = nextIdx;
-    setIndex(idx);
   };
 
   const INTERVAL = 4200;
@@ -648,9 +584,6 @@ if (window.gsap && window.ScrollTrigger) {
     marker.addEventListener('pointerenter', () => { paused = true; });
     marker.addEventListener('pointerleave', () => { paused = false; });
   }
-
-  // Init: counter is a smooth transition for the fade
-  if (currentEl) currentEl.style.transition = 'opacity 200ms ease';
 })();
 
 /* ============================================================
