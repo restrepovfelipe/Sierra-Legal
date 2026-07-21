@@ -1357,7 +1357,7 @@ section { padding: clamp(56px, 8vh, 96px) 0; }
 
 .foot__credit { display: flex; align-items: center; gap: 6px; }
 .foot__credit-link { display: inline-flex; align-items: center; gap: 6px; }
-.foot__credit-logo { height: 15px; width: auto; display: block; opacity: 0.85; transition: opacity var(--dur-med) var(--ease-out); }
+.foot__credit-logo { height: 26px; width: auto; display: block; opacity: 0.85; transition: opacity var(--dur-med) var(--ease-out); }
 .foot__credit-link:hover .foot__credit-logo { opacity: 1; }
 
 @media (max-width: 900px) {
